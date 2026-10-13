@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enciclopedia de Doraemon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Orbitron:wght@500;700&family=Press+Start+2P&family=Poppins:wght@400;500;600;700&family=Comic+Neue:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* =========================================================
+   VARIABLES Y BASE
+   ========================================================= */
+:root{
+  --blue:#0096e0; --blue-dark:#0b3d91; --navy:#0e2147; --red:#e53935; --yellow:#ffd23f; --neon:#29d4ff;
+  --btn-bg:#0096e0; --btn-fg:#ffffff;
+  --font-head:'Fredoka','Noto Sans JP',sans-serif;
+  --font-body:'Poppins','Noto Sans JP',system-ui,sans-serif;
+  --glass:rgba(255,255,255,.62); --glass-brd:rgba(255,255,255,.85);
+  --shadow:0 10px 30px rgba(11,61,145,.16);
+  --btn-radius:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);color:var(--navy);min-height:100vh;line-height:1.5;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(41,212,255,.35),transparent 40%),
+    radial-gradient(circle at 90% 20%,rgba(255,210,63,.28),transparent 35%),
+    radial-gradient(circle at 70% 95%,rgba(229,57,53,.14),transparent 40%),
+    linear-gradient(160deg,#e6f6ff,#cde8ff 55%,#e9f3ff);
+  background-attachment:fixed;
+}
+body.noscroll{overflow:hidden}
+h1,h2,h3,h4,.btn,.navbtn,.chip-h{font-family:var(--font-head)}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:var(--navy)}
+:focus-visible{outline:3px solid var(--neon);outline-offset:2px}
+
+/* =========================================================
+   BOTONES PERSONALIZABLES
+   ========================================================= */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  background:var(--btn-bg);color:var(--btn-fg);padding:.6rem 1.2rem;border-radius:var(--btn-radius);
+  font-weight:600;font-size:.95rem;border:2px solid transparent;
+  transition:transform .18s ease,box-shadow .25s ease,filter .2s ease;
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:rgba(255,255,255,.7);color:var(--navy);border-color:rgba(14,33,71,.12)}
+.btn.danger{background:var(--red);color:#fff}
+.btn.sm{padding:.35rem .8rem;font-size:.82rem}
+body[data-shape=pill]{--btn-radius:999px}
+body[data-shape=round]{--btn-radius:14px}
+body[data-shape=rect]{--btn-radius:5px}
+body[data-shape=sharp]{--btn-radius:0}
+body[data-shape=sharp] .btn{border-color:var(--navy)}
+body[data-effect=shadow] .btn:not(.ghost){box-shadow:0 8px 20px color-mix(in srgb,var(--btn-bg) 55%,transparent)}
+body[data-effect=neon] .btn:not(.ghost){
+  border-color:color-mix(in srgb,var(--btn-bg) 40%,#fff);
+  box-shadow:0 0 6px var(--btn-bg),0 0 18px color-mix(in srgb,var(--btn-bg) 70%,transparent),inset 0 0 8px rgba(255,255,255,.35);
+  text-shadow:0 0 6px rgba(255,255,255,.6);
+}
+
+/* =========================================================
+   CABECERA Y NAVEGACIÓN
+   ========================================================= */
+#top{
+  position:fixed;inset:0 0 auto 0;height:64px;z-index:40;display:flex;align-items:center;gap:.75rem;padding:0 1rem;
+  background:linear-gradient(90deg,rgba(0,150,224,.92),rgba(11,61,145,.92));backdrop-filter:blur(14px);
+  color:#fff;box-shadow:0 4px 20px rgba(11,61,145,.3);border-bottom:3px solid var(--yellow);
+}
+#top .brand{display:flex;align-items:center;gap:.6rem;min-width:0}
+#top .brand .mini{width:38px;height:38px;border-radius:50%;background:#fff;color:var(--blue);display:grid;place-items:center;overflow:hidden;flex:none;border:2px solid var(--yellow)}
+#top .brand .mini img{width:100%;height:100%;object-fit:cover}
+#top h1{font-size:1.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#top .bell{color:var(--yellow);margin-left:auto}
+#top .collar{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--red);margin-right:.35rem}
+
+#mainNav{
+  position:fixed;z-index:45;display:flex;gap:.35rem;padding:.4rem;border-radius:22px;
+  background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--glass-brd);box-shadow:var(--shadow);
+}
+.navbtn{
+  display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:64px;padding:.45rem .6rem;border-radius:16px;
+  font-size:.72rem;font-weight:600;color:var(--navy);transition:background .2s,color .2s,transform .2s;
+}
+.navbtn i{font-size:1.15rem}
+.navbtn:hover{transform:translateY(-2px);background:rgba(0,150,224,.12)}
+.navbtn.active{background:var(--btn-bg);color:var(--btn-fg)}
+body[data-menu=top] #mainNav{top:8px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
+body[data-menu=top] .navbtn{flex-direction:row;color:#fff;font-size:.82rem;gap:.4rem;min-width:0}
+body[data-menu=top] .navbtn.active{color:var(--btn-fg)}
+body[data-menu=top] .navbtn i{font-size:.95rem}
+body[data-menu=tl] #mainNav{left:14px;top:84px;flex-direction:column}
+body[data-menu=tr] #mainNav{right:14px;top:84px;flex-direction:column}
+body[data-menu=bottom] #mainNav{bottom:14px;left:50%;transform:translateX(-50%)}
+body[data-menu=tl] main{padding-left:110px}
+body[data-menu=tr] main{padding-right:110px}
+body[data-menu=bottom] main{padding-bottom:110px}
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+main{max-width:1280px;margin:0 auto;padding:84px 1.25rem 90px;transition:padding .3s}
+.hero{
+  display:flex;align-items:center;gap:1.4rem;padding:1.3rem 1.5rem;border-radius:28px;margin-bottom:1.2rem;
+  background:linear-gradient(120deg,rgba(0,150,224,.88),rgba(41,212,255,.7));color:#fff;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.5);
+}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,var(--yellow),transparent 70%);opacity:.5}
+.avatar{width:110px;height:110px;border-radius:50%;background:#fff;color:var(--blue);display:grid;place-items:center;font-size:2.6rem;overflow:hidden;flex:none;border:5px solid #fff;box-shadow:0 0 0 4px var(--yellow),0 10px 24px rgba(0,0,0,.2);animation:float 4s ease-in-out infinite}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.hero h2{font-size:clamp(1.4rem,3vw,2.2rem);line-height:1.15}
+.hero p{opacity:.92;margin-top:.2rem}
+.hero .counts{display:flex;gap:.6rem;margin-top:.7rem;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.25);padding:.2rem .8rem;border-radius:99px;font-size:.82rem;font-weight:600;backdrop-filter:blur(6px)}
+@keyframes float{50%{transform:translateY(-6px)}}
+
+.toolbar{
+  display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.1rem;padding:.7rem;border-radius:20px;
+  background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--glass-brd);box-shadow:var(--shadow);
+}
+.search{flex:1 1 240px;position:relative}
+.search i{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--blue)}
+.search input{width:100%;padding:.6rem .9rem .6rem 2.4rem;border-radius:14px;border:2px solid transparent;background:#fff;transition:border .2s,box-shadow .2s}
+.search input:focus{outline:0;border-color:var(--neon);box-shadow:0 0 0 4px rgba(41,212,255,.25)}
+.sel{padding:.6rem .8rem;border-radius:14px;border:2px solid transparent;background:#fff;max-width:100%}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.1rem}
+.card{
+  background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-brd);border-radius:22px;overflow:hidden;
+  box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;
+  transition:transform .25s,box-shadow .25s;animation:pop .45s both;
+}
+.card:hover{transform:translateY(-6px) rotate(-.4deg);box-shadow:0 18px 38px rgba(11,61,145,.25)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}}
+.thumb{position:relative;aspect-ratio:4/3;background:linear-gradient(135deg,#bfe6ff,#fff4c2);display:grid;place-items:center;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.card:hover .thumb img{transform:scale(1.06)}
+.ph{font-size:2.6rem;color:var(--blue);opacity:.7}
+.heart{position:absolute;top:.6rem;left:.6rem;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.85);color:#9aa7c4;display:grid;place-items:center;transition:transform .2s,color .2s}
+.heart:hover{transform:scale(1.15)}
+.heart.on{color:var(--red);animation:beat .4s}
+@keyframes beat{50%{transform:scale(1.35)}}
+.score{position:absolute;top:.6rem;right:.6rem;background:var(--yellow);color:var(--navy);font-family:var(--font-head);font-weight:700;padding:.15rem .65rem;border-radius:99px;box-shadow:0 3px 8px rgba(0,0,0,.18);font-size:.9rem}
+.score::before{content:"\f0f3";font-family:"Font Awesome 6 Free";font-weight:900;margin-right:.3rem;color:var(--red);font-size:.75rem}
+.cbody{padding:.85rem 1rem 1rem;display:flex;flex-direction:column;gap:.35rem;flex:1}
+.cbody h3{font-size:1.1rem;line-height:1.2}
+.cbody p{font-size:.85rem;color:#44557c;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cbody small{color:#5d6d93;margin-top:auto;font-size:.78rem}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{background:rgba(0,150,224,.14);color:var(--blue-dark);padding:.1rem .6rem;border-radius:99px;font-size:.74rem;font-weight:600}
+.chip.red{background:rgba(229,57,53,.14);color:#a3201d}
+.chip.yel{background:rgba(255,210,63,.4);color:#6b5200}
+.empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:#5d6d93;background:var(--glass);border-radius:22px;border:2px dashed rgba(0,150,224,.35)}
+.empty i{font-size:2.4rem;color:var(--blue);margin-bottom:.6rem;display:block}
+
+/* =========================================================
+   ACCIONES RÁPIDAS + BOLSILLO MÁGICO
+   ========================================================= */
+#fabs{position:fixed;z-index:44;bottom:18px;display:flex;flex-direction:column;gap:.6rem;align-items:center}
+body[data-fab=br] #fabs{right:18px}
+body[data-fab=bl] #fabs{left:18px}
+body[data-menu=bottom] #fabs{bottom:100px}
+.fab{width:50px;height:50px;border-radius:50%;background:var(--btn-bg);color:var(--btn-fg);display:grid;place-items:center;box-shadow:var(--shadow);transition:transform .2s}
+.fab:hover{transform:scale(1.12) rotate(6deg)}
+.pocket{
+  width:86px;height:46px;border-radius:0 0 86px 86px;background:#fff;border:4px solid var(--navy);border-top-width:6px;
+  display:grid;place-items:center;color:var(--red);font-size:1.4rem;position:relative;box-shadow:0 8px 20px rgba(11,61,145,.35);
+  transition:transform .2s;animation:bob 2.6s ease-in-out infinite;
+}
+.pocket::before{content:"";position:absolute;top:-12px;left:-6px;right:-6px;height:10px;border-radius:99px;background:var(--navy)}
+.pocket:hover{transform:scale(1.1)}
+.pocket.shake{animation:shake .9s}
+@keyframes bob{50%{transform:translateY(-5px)}}
+@keyframes shake{0%,100%{transform:rotate(0)}15%{transform:rotate(-18deg) scale(1.1)}30%{transform:rotate(16deg) scale(1.15)}45%{transform:rotate(-14deg) scale(1.2)}60%{transform:rotate(12deg) scale(1.2)}80%{transform:scale(1.3)}}
+.reveal{text-align:center}
+.reveal .big{font-family:var(--font-head);font-size:1.8rem;color:var(--red);animation:tada .8s}
+@keyframes tada{0%{transform:scale(.2) rotate(-20deg);opacity:0}60%{transform:scale(1.25) rotate(6deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.reveal img,.reveal .ph-big{width:min(260px,70%);aspect-ratio:1;object-fit:cover;border-radius:24px;margin:.8rem auto;box-shadow:var(--shadow);animation:tada .9s .1s both;display:block}
+.ph-big{display:grid!important;place-items:center;background:linear-gradient(135deg,#bfe6ff,#fff4c2);font-size:4rem;color:var(--blue)}
+
+/* =========================================================
+   MODALES
+   ========================================================= */
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(14,33,71,.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.overlay.open{opacity:1;visibility:visible}
+#confirm{z-index:120}
+.modal-box{width:min(720px,100%);max-height:92vh;overflow:auto;background:rgba(255,255,255,.93);border-radius:28px;padding:1.5rem;box-shadow:0 30px 70px rgba(0,0,0,.35);transform:translateY(30px) scale(.94);transition:transform .3s cubic-bezier(.2,1.3,.4,1);position:relative;border:1px solid #fff}
+.modal-box.wide{width:min(860px,100%)}
+.overlay.open .modal-box{transform:none}
+.modal-box.small{width:min(420px,100%)}
+.xbtn{position:sticky;float:right;top:0;width:38px;height:38px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;z-index:2;transition:transform .2s}
+.xbtn:hover{transform:rotate(90deg)}
+.modal-box h2{font-size:1.5rem;margin-bottom:.8rem;padding-right:2.6rem}
+.modal-box h3{font-size:1.05rem;margin:1.1rem 0 .5rem;color:var(--blue-dark)}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end;margin-top:1rem}
+.gallery .main{width:100%;max-height:340px;object-fit:contain;background:linear-gradient(135deg,#e1f3ff,#fff8d6);border-radius:20px}
+.gallery .ph-main{height:200px;border-radius:20px;background:linear-gradient(135deg,#bfe6ff,#fff4c2);display:grid;place-items:center;font-size:3.4rem;color:var(--blue)}
+.thumbs{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
+.thumbs .t{width:62px;height:62px;border-radius:12px;overflow:hidden;border:3px solid transparent;position:relative;cursor:pointer;flex:none;background:#eaf5ff}
+.thumbs .t.sel{border-color:var(--btn-bg)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:.65rem;display:grid;place-items:center}
+.link{color:var(--blue);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* Formularios */
+.field{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.8rem}
+.field label,.lbl{font-weight:600;font-size:.85rem;color:var(--blue-dark)}
+.field input[type=text],.field input:not([type]),.field input[type=date],.field select,.field textarea,.inp{
+  padding:.55rem .8rem;border-radius:12px;border:2px solid #d3e6f7;background:#fff;width:100%;transition:border .2s,box-shadow .2s
+}
+.field textarea{min-height:80px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus,.inp:focus{outline:0;border-color:var(--neon);box-shadow:0 0 0 4px rgba(41,212,255,.2)}
+.checklist{max-height:170px;overflow:auto;border:2px solid #d3e6f7;border-radius:12px;padding:.3rem;background:#fff}
+.checklist label{display:flex;gap:.5rem;align-items:center;padding:.3rem .5rem;border-radius:8px;font-size:.9rem;cursor:pointer}
+.checklist label:hover{background:#eaf5ff}
+.hidden{display:none!important}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.box{background:rgba(0,150,224,.07);border-radius:16px;padding:.8rem;margin-bottom:.8rem}
+
+/* Valoraciones */
+.scorebox{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bigscore{font-family:var(--font-head);font-size:2.6rem;font-weight:700;color:var(--blue);line-height:1}
+.bigscore small{font-size:.9rem;color:#5d6d93}
+.bars{flex:1;min-width:220px;display:grid;gap:.4rem}
+.bar{display:grid;grid-template-columns:110px 1fr 48px;align-items:center;gap:.5rem;font-size:.82rem}
+.bar .track{height:10px;background:#dcebf8;border-radius:99px;overflow:hidden}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--blue));border-radius:99px;transition:width .6s}
+.hist{display:grid;gap:.4rem;max-height:200px;overflow:auto}
+.hist .h{display:flex;align-items:center;gap:.6rem;padding:.4rem .7rem;background:#fff;border-radius:12px;font-size:.84rem;flex-wrap:wrap}
+.hist .h b{font-family:var(--font-head);color:var(--blue);font-size:1.05rem}
+.hist .x{margin-left:auto;color:var(--red)}
+.rform{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5rem;align-items:end}
+.rform .field{margin:0}
+
+/* Ajustes */
+.opts{display:flex;gap:.4rem;flex-wrap:wrap}
+.opt{padding:.4rem .9rem;border-radius:99px;background:#eaf5ff;border:2px solid transparent;font-size:.85rem;font-weight:600;transition:all .2s}
+.opt.on{border-color:var(--btn-bg);background:#fff;box-shadow:0 0 0 3px color-mix(in srgb,var(--btn-bg) 25%,transparent)}
+.swatch{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .2s}
+.swatch:hover{transform:scale(1.2)}
+input[type=color]{width:46px;height:36px;border:2px solid #d3e6f7;border-radius:10px;padding:2px;background:#fff;cursor:pointer}
+
+/* Toasts */
+#toasts{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:200;display:grid;gap:.5rem;width:min(92vw,420px)}
+.toast{padding:.7rem 1rem;border-radius:14px;background:var(--navy);color:#fff;box-shadow:var(--shadow);animation:pop .3s both;display:flex;gap:.6rem;align-items:center}
+.toast.err{background:var(--red)}
+.toast.ok{background:#12a150}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media(max-width:900px){#top h1{font-size:1rem}body[data-menu=top] #mainNav{position:fixed}}
+@media(max-width:767px){
+  /* En móvil el menú siempre es una barra inferior táctil */
+  #mainNav,body[data-menu] #mainNav{top:auto!important;left:8px!important;right:8px!important;bottom:8px!important;transform:none!important;flex-direction:row!important;justify-content:space-around;border-radius:24px;background:rgba(255,255,255,.88)}
+  body[data-menu] .navbtn{flex-direction:column!important;color:var(--navy)!important;font-size:.68rem;min-width:0;flex:1}
+  body[data-menu] .navbtn.active{color:var(--btn-fg)!important}
+  body[data-menu] .navbtn i{font-size:1.2rem!important}
+  body[data-menu] main{padding:78px .8rem 110px!important}
+  body[data-menu] #fabs{bottom:92px!important}
+  .hero{flex-direction:column;text-align:center;padding:1.1rem}
+  .avatar{width:92px;height:92px}
+  .hero .counts{justify-content:center}
+  .grid{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .bar{grid-template-columns:90px 1fr 44px}
+  .grid2{grid-template-columns:1fr}
+  .modal-box{padding:1.1rem;border-radius:22px}
+  #top .brand h1{max-width:60vw}
+}
+@media(max-width:380px){.grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-shape="pill" data-effect="shadow" data-menu="top" data-fab="br">
+
+<header id="top">
+  <div class="brand">
+    <div class="mini" id="miniAvatar"></div>
+    <h1><span class="collar"></span><span id="brandTitle"></span></h1>
+  </div>
+  <i class="fa-solid fa-bell bell" aria-hidden="true"></i>
+</header>
+
+<nav id="mainNav" aria-label="Menu"></nav>
+
+<main>
+  <section class="hero" id="hero"></section>
+  <section class="toolbar" id="toolbar">
+    <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="q" type="search" autocomplete="off"></div>
+    <select id="sort" class="sel"></select>
+    <select id="filter" class="sel"></select>
+  </section>
+  <section class="grid" id="list" aria-live="polite"></section>
+</main>
+
+<div id="fabs">
+  <button class="fab" data-act="newEpisode" id="fabEp" title="+"><i class="fa-solid fa-film"></i></button>
+  <button class="fab" data-act="newGadget" id="fabGa" title="+"><i class="fa-solid fa-plus"></i></button>
+  <button class="pocket" id="pocketBtn" data-act="pocket" aria-label="Pocket"><i class="fa-solid fa-star"></i></button>
+</div>
+
+<div class="overlay" id="modal"><div class="modal-box" id="modalBox"><button class="xbtn" data-act="closeModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button><div id="modalBody"></div></div></div>
+<div class="overlay" id="confirm"><div class="modal-box small" id="confirmBox"></div></div>
+<div id="toasts"></div>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+
+<script>
+/* =========================================================
+   1. UTILIDADES
+   ========================================================= */
+const STORE = 'doraemon-encyclopedia-v1';
+const $ = (s, r = document) => r.querySelector(s);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const round2 = n => Math.round(n * 100) / 100;
+const fmt = n => n == null ? '—' : n.toFixed(2);
+
+const GK = ['originality', 'utility', 'fun'];       // aspectos de inventos
+const EK = ['originality', 'plot', 'enjoy'];        // aspectos de episodios
+const TYPES = ['classic', 'special', 'movie'];
+const SORTS = ['new', 'antiq_new', 'antiq_old', 'best', 'worst', 'az', 'za'];
+const FONTS = [
+  { id: 'fredoka', name: 'Fredoka · redondeada', css: "'Fredoka','Noto Sans JP',sans-serif" },
+  { id: 'orbitron', name: 'Orbitron · futurista', css: "'Orbitron','Noto Sans JP',sans-serif" },
+  { id: 'pixel', name: 'Press Start 2P · pixel', css: "'Press Start 2P','Noto Sans JP',monospace" },
+  { id: 'poppins', name: 'Poppins · moderna', css: "'Poppins','Noto Sans JP',sans-serif" },
+  { id: 'comic', name: 'Comic Neue · fandom', css: "'Comic Neue','Noto Sans JP',cursive" },
+];
+const PRESETS = [
+  ['#0096e0', '#ffffff'], ['#ffd23f', '#0e2147'], ['#e53935', '#ffffff'], ['#29d4ff', '#001a33'], ['#0e2147', '#7fdcff'], ['#12a150', '#ffffff'],
+];
+
+/* =========================================================
+   2. TRADUCCIONES (ES / EN / JA)
+   ========================================================= */
+const T = {
+es: {
+  app_title:'Enciclopedia de Doraemon', app_sub:'Inventos, episodios y tus notas, todo en un solo sitio',
+  nav_gadgets:'Inventos', nav_episodes:'Episodios', nav_fav:'Mochila', nav_settings:'Ajustes',
+  search_ph:'Buscar inventos, utilidades, episodios…', all_tags:'Todas las etiquetas', all_types:'Todos los tipos',
+  s_new:'Últimos añadidos', s_antiq_new:'Más recientes', s_antiq_old:'Más antiguos', s_best:'Mejor nota', s_worst:'Peor nota', s_az:'A → Z', s_za:'Z → A',
+  type_classic:'Episodio clásico', type_special:'Episodio especial', type_movie:'Película de cine',
+  add_gadget:'Nuevo invento', add_episode:'Nuevo episodio', no_results:'No hay resultados con esos filtros.',
+  empty_gadgets:'Aún no hay inventos. ¡Crea el primero!', empty_episodes:'Aún no hay episodios registrados.', empty_fav:'Tu mochila está vacía. Marca inventos con el corazón.',
+  c_gadgets:'inventos', c_episodes:'episodios', c_fav:'favoritos', in_eps:'episodios',
+  f_name:'Nombre', f_desc:'Descripción básica', f_utility:'Utilidad / propósito detallado', f_tags:'Etiquetas (separadas por comas)',
+  f_images:'Imágenes', f_upload:'Subir imágenes', f_url_ph:'https://… URL de imagen', f_add_url:'Añadir URL',
+  f_episodes_link:'Episodios donde aparece', f_filter:'Filtrar…', f_title:'Título', f_type:'Tipo', f_date:'Fecha', f_notes:'Notas de visualización',
+  f_gadgets_link:'Inventos que aparecen', f_new_inline:'Crear un invento nuevo aquí', f_inline_name:'Nombre del invento', f_inline_desc:'Descripción breve', f_inline_add:'Añadir',
+  save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', close:'Cerrar', yes:'Sí, continuar',
+  confirm_del:'¿Seguro que quieres eliminar «{n}»? No se puede deshacer.',
+  r_title:'Calificaciones', r_overall:'General', r_originality:'Originalidad', r_utility:'Utilidad práctica', r_fun:'Diversión / factor molón', r_plot:'Trama', r_enjoy:'Disfrute general',
+  r_add:'Añadir nota', r_hint:'Decimales de 1 a 10 (ej. 8.75). Aspectos opcionales.', r_history:'Historial', r_avg:'Media', r_none:'Sin notas todavía', r_votes:'notas', r_invalid:'Las notas deben ser números entre 1 y 10.',
+  d_episodes:'Aparece en', d_gadgets:'Inventos que aparecen', d_none:'Ninguno todavía',
+  fav_add:'Añadir a la mochila', fav_remove:'Quitar de la mochila',
+  pocket_empty:'El bolsillo está vacío: crea algún invento primero.', pocket_shout:'¡Tachán!', pocket_again:'Sacar otro', pocket_open:'Ver ficha',
+  set_title:'Panel de personalización', set_avatar:'Imagen principal', set_avatar_pick:'Elegir imagen', set_avatar_reset:'Quitar',
+  set_lang:'Idioma', set_font:'Tipografía de títulos y botones', set_shape:'Forma de los botones', shape_pill:'Píldora', shape_round:'Redondeado', shape_rect:'Rectangular', shape_sharp:'Afilado',
+  set_effect:'Efecto de los botones', eff_none:'Ninguno', eff_shadow:'Sombra brillante', eff_neon:'Neón', set_bg:'Fondo de botones', set_fg:'Color de letra', set_presets:'Combinaciones rápidas',
+  set_menu:'Posición del menú', menu_top:'Arriba (centro)', menu_tl:'Esquina izquierda', menu_tr:'Esquina derecha', menu_bottom:'Barra flotante inferior', set_menu_note:'En móvil el menú siempre es una barra inferior táctil.',
+  set_fab:'Botones de acción rápida', fab_br:'Abajo a la derecha', fab_bl:'Abajo a la izquierda',
+  set_data:'Datos y copias de seguridad', exp:'Exportar JSON', imp:'Importar JSON', reset:'Borrar todo', storage:'Espacio usado (aprox.)',
+  import_title:'Importar copia de seguridad', import_replace:'Reemplazar todo', import_merge:'Fusionar (añadir lo nuevo)', import_ok:'Datos importados', import_err:'El archivo no es una copia válida.',
+  reset_confirm:'Se borrarán todos los inventos, episodios y notas. ¿Continuar?',
+  err_quota:'No se pudo guardar: el almacenamiento del navegador está lleno. Usa imágenes más pequeñas o por URL.', err_img:'No se pudo leer esa imagen.', err_big:'La imagen supera los 15 MB.', err_url:'URL de imagen no válida.', err_name:'El nombre es obligatorio.',
+  saved:'Guardado', deleted:'Eliminado', rated:'Nota añadida',
+},
+en: {
+  app_title:'Doraemon Encyclopedia', app_sub:'Gadgets, episodes and your ratings, all in one place',
+  nav_gadgets:'Gadgets', nav_episodes:'Episodes', nav_fav:'Backpack', nav_settings:'Settings',
+  search_ph:'Search gadgets, uses, episodes…', all_tags:'All tags', all_types:'All types',
+  s_new:'Recently added', s_antiq_new:'Newest first', s_antiq_old:'Oldest first', s_best:'Best rated', s_worst:'Worst rated', s_az:'A → Z', s_za:'Z → A',
+  type_classic:'Classic episode', type_special:'Special episode', type_movie:'Feature film',
+  add_gadget:'New gadget', add_episode:'New episode', no_results:'No results with those filters.',
+  empty_gadgets:'No gadgets yet. Create the first one!', empty_episodes:'No episodes logged yet.', empty_fav:'Your backpack is empty. Tap the heart on a gadget.',
+  c_gadgets:'gadgets', c_episodes:'episodes', c_fav:'favorites', in_eps:'episodes',
+  f_name:'Name', f_desc:'Short description', f_utility:'Detailed use / purpose', f_tags:'Tags (comma separated)',
+  f_images:'Images', f_upload:'Upload images', f_url_ph:'https://… image URL', f_add_url:'Add URL',
+  f_episodes_link:'Episodes where it appears', f_filter:'Filter…', f_title:'Title', f_type:'Type', f_date:'Date', f_notes:'Viewing notes',
+  f_gadgets_link:'Gadgets that appear', f_new_inline:'Create a new gadget here', f_inline_name:'Gadget name', f_inline_desc:'Short description', f_inline_add:'Add',
+  save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', close:'Close', yes:'Yes, continue',
+  confirm_del:'Delete “{n}”? This cannot be undone.',
+  r_title:'Ratings', r_overall:'Overall', r_originality:'Originality', r_utility:'Practical use', r_fun:'Fun / cool factor', r_plot:'Plot', r_enjoy:'Overall enjoyment',
+  r_add:'Add rating', r_hint:'Decimals from 1 to 10 (e.g. 8.75). Aspects are optional.', r_history:'History', r_avg:'Average', r_none:'No ratings yet', r_votes:'ratings', r_invalid:'Ratings must be numbers between 1 and 10.',
+  d_episodes:'Appears in', d_gadgets:'Gadgets that appear', d_none:'None yet',
+  fav_add:'Add to backpack', fav_remove:'Remove from backpack',
+  pocket_empty:'The pocket is empty: create a gadget first.', pocket_shout:'Ta-da!', pocket_again:'Pull another', pocket_open:'Open entry',
+  set_title:'Customization panel', set_avatar:'Main image', set_avatar_pick:'Choose image', set_avatar_reset:'Remove',
+  set_lang:'Language', set_font:'Font for titles and buttons', set_shape:'Button shape', shape_pill:'Pill', shape_round:'Rounded', shape_rect:'Rectangular', shape_sharp:'Sharp',
+  set_effect:'Button effect', eff_none:'None', eff_shadow:'Glowing shadow', eff_neon:'Neon', set_bg:'Button background', set_fg:'Text color', set_presets:'Quick combos',
+  set_menu:'Menu position', menu_top:'Top (center)', menu_tl:'Left corner', menu_tr:'Right corner', menu_bottom:'Floating bottom bar', set_menu_note:'On mobile the menu is always a touch-friendly bottom bar.',
+  set_fab:'Quick action buttons', fab_br:'Bottom right', fab_bl:'Bottom left',
+  set_data:'Data and backups', exp:'Export JSON', imp:'Import JSON', reset:'Erase everything', storage:'Space used (approx.)',
+  import_title:'Import backup', import_replace:'Replace everything', import_merge:'Merge (add new items)', import_ok:'Data imported', import_err:'That file is not a valid backup.',
+  reset_confirm:'All gadgets, episodes and ratings will be erased. Continue?',
+  err_quota:'Could not save: browser storage is full. Use smaller images or URLs.', err_img:'Could not read that image.', err_big:'The image is over 15 MB.', err_url:'Invalid image URL.', err_name:'Name is required.',
+  saved:'Saved', deleted:'Deleted', rated:'Rating added',
+},
+ja: {
+  app_title:'ドラえもん大図鑑', app_sub:'ひみつ道具もエピソードも、あなたの評価もひとまとめ',
+  nav_gadgets:'ひみつ道具', nav_episodes:'エピソード', nav_fav:'お気に入り', nav_settings:'設定',
+  search_ph:'道具・用途・エピソードを検索…', all_tags:'すべてのタグ', all_types:'すべての種類',
+  s_new:'追加順（新しい）', s_antiq_new:'新しい順', s_antiq_old:'古い順', s_best:'評価が高い順', s_worst:'評価が低い順', s_az:'A → Z', s_za:'Z → A',
+  type_classic:'通常エピソード', type_special:'スペシャル', type_movie:'劇場版',
+  add_gadget:'道具を追加', add_episode:'エピソードを追加', no_results:'条件に合う結果がありません。',
+  empty_gadgets:'まだ道具がありません。最初の1つを作ろう！', empty_episodes:'まだエピソードがありません。', empty_fav:'お気に入りは空です。ハートを押して追加しよう。',
+  c_gadgets:'道具', c_episodes:'エピソード', c_fav:'お気に入り', in_eps:'話',
+  f_name:'名前', f_desc:'簡単な説明', f_utility:'詳しい用途・目的', f_tags:'タグ（カンマ区切り）',
+  f_images:'画像', f_upload:'画像をアップロード', f_url_ph:'https://… 画像URL', f_add_url:'URLを追加',
+  f_episodes_link:'登場するエピソード', f_filter:'絞り込み…', f_title:'タイトル', f_type:'種類', f_date:'日付', f_notes:'視聴メモ',
+  f_gadgets_link:'登場する道具', f_new_inline:'ここで新しい道具を作る', f_inline_name:'道具の名前', f_inline_desc:'簡単な説明', f_inline_add:'追加',
+  save:'保存', cancel:'キャンセル', edit:'編集', delete:'削除', close:'閉じる', yes:'はい、続ける',
+  confirm_del:'「{n}」を削除しますか？元に戻せません。',
+  r_title:'評価', r_overall:'総合', r_originality:'独創性', r_utility:'実用性', r_fun:'楽しさ・カッコよさ', r_plot:'ストーリー', r_enjoy:'全体の満足度',
+  r_add:'評価を追加', r_hint:'1〜10の小数（例：8.75）。各項目は任意です。', r_history:'履歴', r_avg:'平均', r_none:'まだ評価がありません', r_votes:'件', r_invalid:'評価は1〜10の数値で入力してください。',
+  d_episodes:'登場エピソード', d_gadgets:'登場する道具', d_none:'まだありません',
+  fav_add:'お気に入りに追加', fav_remove:'お気に入りから外す',
+  pocket_empty:'ポケットが空です。まず道具を作ってください。', pocket_shout:'じゃじゃーん！', pocket_again:'もう一度引く', pocket_open:'詳細を見る',
+  set_title:'カスタマイズパネル', set_avatar:'メイン画像', set_avatar_pick:'画像を選ぶ', set_avatar_reset:'削除',
+  set_lang:'言語', set_font:'見出しとボタンのフォント', set_shape:'ボタンの形', shape_pill:'丸型', shape_round:'角丸', shape_rect:'四角', shape_sharp:'シャープ',
+  set_effect:'ボタンの効果', eff_none:'なし', eff_shadow:'光る影', eff_neon:'ネオン', set_bg:'ボタンの背景色', set_fg:'文字色', set_presets:'クイック配色',
+  set_menu:'メニューの位置', menu_top:'上（中央）', menu_tl:'左の端', menu_tr:'右の端', menu_bottom:'下のフローティングバー', set_menu_note:'スマホでは常に下部のバーになります。',
+  set_fab:'クイックボタンの位置', fab_br:'右下', fab_bl:'左下',
+  set_data:'データとバックアップ', exp:'JSONを書き出す', imp:'JSONを読み込む', reset:'すべて削除', storage:'使用容量（目安）',
+  import_title:'バックアップの読み込み', import_replace:'すべて置き換える', import_merge:'統合する（新しいものだけ追加）', import_ok:'読み込みました', import_err:'有効なバックアップファイルではありません。',
+  reset_confirm:'すべての道具・エピソード・評価が削除されます。続けますか？',
+  err_quota:'保存できません：ブラウザの保存容量がいっぱいです。小さい画像かURLを使ってください。', err_img:'画像を読み込めませんでした。', err_big:'画像が15MBを超えています。', err_url:'画像URLが正しくありません。', err_name:'名前は必須です。',
+  saved:'保存しました', deleted:'削除しました', rated:'評価を追加しました',
+}};
+const t = (k, v) => {
+  let s = (T[S?.settings?.lang] || T.es)[k] ?? T.es[k] ?? k;
+  if (v) for (const x in v) s = s.replace('{' + x + '}', v[x]);
+  return s;
+};
+
+/* =========================================================
+   3. ESTADO Y PERSISTENCIA (localStorage con manejo de errores)
+   ========================================================= */
+let S;                                  // estado global
+const ui = { view: 'gadgets', q: '', sort: 'new', tag: '', type: '' };
+
+const defaults = () => ({
+  gadgets: [], episodes: [],
+  settings: { lang: 'es', font: 'fredoka', btnShape: 'pill', btnEffect: 'shadow', btnBg: '#0096e0', btnFg: '#ffffff', menuPos: 'top', fabPos: 'br', avatar: '' },
+});
+const normR = a => (Array.isArray(a) ? a : []).filter(r => r && Number.isFinite(+r.overall)).map(r => {
+  const o = { id: String(r.id || uid()), overall: +r.overall, date: r.date || new Date().toISOString() };
+  [...GK, ...EK].forEach(k => { if (Number.isFinite(+r[k]) && r[k] !== null && r[k] !== '') o[k] = +r[k]; });
+  return o;
+});
+function normalize(d) {
+  const o = defaults();
+  Object.assign(o.settings, d.settings || {});
+  o.gadgets = (Array.isArray(d.gadgets) ? d.gadgets : []).filter(g => g && g.name).map(g => ({
+    id: String(g.id || uid()), name: String(g.name), desc: String(g.desc || ''), utility: String(g.utility || ''),
+    images: Array.isArray(g.images) ? g.images.filter(x => typeof x === 'string') : [],
+    tags: Array.isArray(g.tags) ? g.tags.map(String) : [], fav: !!g.fav, ratings: normR(g.ratings), created: +g.created || Date.now(),
+  }));
+  const ids = new Set(o.gadgets.map(g => g.id));
+  o.episodes = (Array.isArray(d.episodes) ? d.episodes : []).filter(e => e && e.title).map(e => ({
+    id: String(e.id || uid()), title: String(e.title), type: TYPES.includes(e.type) ? e.type : 'classic', date: String(e.date || ''),
+    notes: String(e.notes || ''), gadgets: (Array.isArray(e.gadgets) ? e.gadgets.map(String) : []).filter(id => ids.has(id)),
+    ratings: normR(e.ratings), created: +e.created || Date.now(),
+  }));
+  return o;
+}
+function seed() {
+  const s = defaults(); const now = Date.now();
+  [['Hélice de bambú', 'Pequeña hélice para la cabeza que permite volar.', 'Transporte personal por el aire, ligero y siempre a mano.', ['transporte']],
+   ['Puerta mágica', 'Una puerta que lleva a cualquier lugar.', 'Viajes instantáneos a cualquier sitio que imagines.', ['transporte']],
+   ['Pan de la memoria', 'Pan que graba lo que estudias.', 'Se estampa el texto en el pan y, al comerlo, se memoriza.', ['estudio']],
+   ['Gelatina traductora', 'Permite entender cualquier idioma.', 'Comunicación con cualquier persona o criatura.', ['comunicación']],
+  ].forEach(([name, desc, utility, tags], i) => s.gadgets.push({ id: uid() + i, name, desc, utility, images: [], tags, fav: false, ratings: [], created: now + i }));
+  return s;
+}
+function load() {
+  try { const raw = localStorage.getItem(STORE); if (raw) { S = normalize(JSON.parse(raw)); return; } }
+  catch (e) { console.warn('Lectura de localStorage fallida', e); }
+  S = seed();
+}
+function save() {
+  try { localStorage.setItem(STORE, JSON.stringify(S)); return true; }
+  catch (e) { toast(t('err_quota'), 'err'); console.warn(e); return false; }
+}
+/** Ejecuta una mutación y revierte si no se pudo guardar. */
+function commit(mut) {
+  const snap = JSON.stringify(S);
+  mut();
+  if (!save()) { S = JSON.parse(snap); return false; }
+  return true;
+}
+
+/* =========================================================
+   4. CONSULTAS Y ESTADÍSTICAS
+   ========================================================= */
+const gById = id => S.gadgets.find(g => g.id === id);
+const eById = id => S.episodes.find(e => e.id === id);
+const episodesOf = gid => S.episodes.filter(e => e.gadgets.includes(gid));
+const gadgetsOf = e => e.gadgets.map(gById).filter(Boolean);
+function stats(item, keys) {
+  const r = item.ratings || [];
+  const o = { count: r.length, overall: mean(r.map(x => x.overall)) };
+  keys.forEach(k => o[k] = mean(r.map(x => x[k]).filter(v => typeof v === 'number')));
+  return o;
+}
+const avgOf = (item, kind) => stats(item, kind === 'g' ? GK : EK).overall;
+function antiq(item, kind) {
+  const ts = kind === 'g' ? episodesOf(item.id).map(e => Date.parse(e.date)).filter(Number.isFinite) : (Number.isFinite(Date.parse(item.date)) ? [Date.parse(item.date)] : []);
+  return ts.length ? Math.min(...ts) : item.created;
+}
+function sortItems(arr, kind) {
+  const name = x => norm(kind === 'g' ? x.name : x.title);
+  const cmp = {
+    new: (a, b) => b.created - a.created,
+    antiq_new: (a, b) => antiq(b, kind) - antiq(a, kind),
+    antiq_old: (a, b) => antiq(a, kind) - antiq(b, kind),
+    az: (a, b) => name(a).localeCompare(name(b)), za: (a, b) => name(b).localeCompare(name(a)),
+    best: (a, b) => (avgOf(b, kind) ?? -1) - (avgOf(a, kind) ?? -1),
+    worst: (a, b) => (avgOf(a, kind) ?? 99) - (avgOf(b, kind) ?? 99),
+  }[ui.sort];
+  return arr.slice().sort(cmp);
+}
+function listGadgets(favOnly) {
+  const q = norm(ui.q); let a = S.gadgets.filter(g => !favOnly || g.fav);
+  if (ui.tag) a = a.filter(g => g.tags.some(x => norm(x) === norm(ui.tag)));
+  if (q) a = a.filter(g => norm([g.name, g.desc, g.utility, g.tags.join(' '), episodesOf(g.id).map(e => e.title).join(' ')].join(' ')).includes(q));
+  return sortItems(a, 'g');
+}
+function listEpisodes() {
+  const q = norm(ui.q); let a = S.episodes.slice();
+  if (ui.type) a = a.filter(e => e.type === ui.type);
+  if (q) a = a.filter(e => norm([e.title, e.notes, gadgetsOf(e).map(g => g.name + ' ' + g.utility).join(' ')].join(' ')).includes(q));
+  return sortItems(a, 'e');
+}
+
+/* =========================================================
+   5. AJUSTES VISUALES
+   ========================================================= */
+function applySettings() {
+  const s = S.settings, r = document.documentElement.style, b = document.body.dataset;
+  r.setProperty('--btn-bg', s.btnBg); r.setProperty('--btn-fg', s.btnFg);
+  r.setProperty('--font-head', (FONTS.find(f => f.id === s.font) || FONTS[0]).css);
+  b.shape = s.btnShape; b.effect = s.btnEffect; b.menu = s.menuPos; b.fab = s.fabPos;
+  document.documentElement.lang = s.lang; document.title = t('app_title');
+}
+function avatarHTML(big) {
+  const a = S.settings.avatar;
+  return a ? `<img src="${esc(a)}" alt="">` : `<i class="fa-solid fa-wand-magic-sparkles"></i>`;
+}
+
+/* =========================================================
+   6. RENDERIZADO PRINCIPAL
+   ========================================================= */
+function render() { applySettings(); renderChrome(); renderToolbar(); renderList(); }
+
+function renderChrome() {
+  $('#brandTitle').textContent = t('app_title');
+  $('#miniAvatar').innerHTML = avatarHTML();
+  const favs = S.gadgets.filter(g => g.fav).length;
+  $('#hero').innerHTML = `<div class="avatar">${avatarHTML(true)}</div>
+    <div style="position:relative;z-index:1"><h2>${esc(t('app_title'))}</h2><p>${esc(t('app_sub'))}</p>
+    <div class="counts"><span class="pill"><i class="fa-solid fa-wand-magic-sparkles"></i> ${S.gadgets.length} ${t('c_gadgets')}</span>
+    <span class="pill"><i class="fa-solid fa-film"></i> ${S.episodes.length} ${t('c_episodes')}</span>
+    <span class="pill"><i class="fa-solid fa-heart"></i> ${favs} ${t('c_fav')}</span></div></div>`;
+  const items = [['gadgets', 'fa-wand-magic-sparkles', 'nav_gadgets'], ['episodes', 'fa-film', 'nav_episodes'], ['favorites', 'fa-bag-shopping', 'nav_fav'], ['settings', 'fa-sliders', 'nav_settings']];
+  $('#mainNav').innerHTML = items.map(([v, ic, k]) => `<button class="navbtn ${ui.view === v ? 'active' : ''}" data-act="nav" data-v="${v}"><i class="fa-solid ${ic}"></i><span>${esc(t(k))}</span></button>`).join('');
+  $('#fabGa').title = t('add_gadget'); $('#fabEp').title = t('add_episode');
+}
+
+function renderToolbar() {
+  $('#q').placeholder = t('search_ph'); $('#q').value = ui.q;
+  $('#sort').innerHTML = SORTS.map(k => `<option value="${k}" ${ui.sort === k ? 'selected' : ''}>${esc(t('s_' + k))}</option>`).join('');
+  const f = $('#filter');
+  if (ui.view === 'episodes') {
+    f.innerHTML = `<option value="">${esc(t('all_types'))}</option>` + TYPES.map(k => `<option value="${k}" ${ui.type === k ? 'selected' : ''}>${esc(t('type_' + k))}</option>`).join('');
+  } else {
+    const tags = [...new Set(S.gadgets.flatMap(g => g.tags))].sort((a, b) => a.localeCompare(b));
+    f.innerHTML = `<option value="">${esc(t('all_tags'))}</option>` + tags.map(x => `<option value="${esc(x)}" ${norm(ui.tag) === norm(x) ? 'selected' : ''}>${esc(x)}</option>`).join('');
+  }
+}
+
+function renderList() {
+  const el = $('#list');
+  let html = '';
+  if (ui.view === 'episodes') {
+    const a = listEpisodes();
+    html = a.length ? a.map(episodeCard).join('') : emptyBox(S.episodes.length ? 'no_results' : 'empty_episodes', 'fa-film');
+  } else {
+    const fav = ui.view === 'favorites', a = listGadgets(fav);
+    html = a.length ? a.map(gadgetCard).join('') : emptyBox(fav && !S.gadgets.some(g => g.fav) ? 'empty_fav' : S.gadgets.length ? 'no_results' : 'empty_gadgets', fav ? 'fa-bag-shopping' : 'fa-wand-magic-sparkles');
+  }
+  el.innerHTML = html;
+}
+const emptyBox = (k, ic) => `<div class="empty"><i class="fa-solid ${ic}"></i>${esc(t(k))}</div>`;
+const placeholder = ic => `<i class="fa-solid ${ic || 'fa-wand-magic-sparkles'} ph"></i>`;
+const scoreBadge = v => `<span class="score">${fmt(v)}</span>`;
+
+function gadgetCard(g, i) {
+  const st = stats(g, GK), n = episodesOf(g.id).length;
+  return `<article class="card" tabindex="0" data-act="openGadget" data-id="${g.id}" style="animation-delay:${Math.min(i || 0, 12) * 30}ms">
+    <div class="thumb">${g.images[0] ? `<img loading="lazy" src="${esc(g.images[0])}" alt="${esc(g.name)}">` : placeholder()}
+      <button class="heart ${g.fav ? 'on' : ''}" data-act="fav" data-id="${g.id}" aria-label="${esc(t(g.fav ? 'fav_remove' : 'fav_add'))}"><i class="fa-solid fa-heart"></i></button>
+      ${st.overall != null ? scoreBadge(st.overall) : ''}</div>
+    <div class="cbody"><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p>
+      <div class="chips">${g.tags.slice(0, 3).map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>
+      <small><i class="fa-solid fa-film"></i> ${n} ${t('in_eps')}</small></div></article>`;
+}
+function episodeCard(e, i) {
+  const st = stats(e, EK), gs = gadgetsOf(e), cover = gs.find(g => g.images[0]);
+  return `<article class="card" tabindex="0" data-act="openEpisode" data-id="${e.id}" style="animation-delay:${Math.min(i || 0, 12) * 30}ms">
+    <div class="thumb">${cover ? `<img loading="lazy" src="${esc(cover.images[0])}" alt="">` : placeholder('fa-film')}${st.overall != null ? scoreBadge(st.overall) : ''}</div>
+    <div class="cbody"><h3>${esc(e.title)}</h3>
+      <div class="chips"><span class="chip ${e.type === 'movie' ? 'red' : e.type === 'special' ? 'yel' : ''}">${esc(t('type_' + e.type))}</span>${e.date ? `<span class="chip">${esc(e.date)}</span>` : ''}</div>
+      <p>${esc(e.notes)}</p><small><i class="fa-solid fa-wand-magic-sparkles"></i> ${gs.length} ${t('c_gadgets')}</small></div></article>`;
+}
+
+/* =========================================================
+   7. MODALES Y AVISOS
+   ========================================================= */
+function openModal(html, opts = {}) {
+  $('#modalBox').className = 'modal-box' + (opts.wide ? ' wide' : '');
+  $('#modalBody').innerHTML = html;
+  $('#modal').classList.add('open'); document.body.classList.add('noscroll');
+  if (!opts.keepScroll) $('#modalBox').scrollTop = 0;
+}
+function closeModal() { $('#modal').classList.remove('open'); document.body.classList.remove('noscroll'); }
+function confirmBox(msg) {
+  return new Promise(res => {
+    $('#confirmBox').innerHTML = `<h2 style="font-size:1.2rem">${esc(msg)}</h2><div class="row end"><button class="btn ghost" id="cNo">${esc(t('cancel'))}</button><button class="btn danger" id="cYes">${esc(t('yes'))}</button></div>`;
+    $('#confirm').classList.add('open');
+    const done = v => { $('#confirm').classList.remove('open'); res(v); };
+    $('#cNo').onclick = () => done(false); $('#cYes').onclick = () => done(true);
+  });
+}
+function toast(msg, kind = 'ok') {
+  const d = document.createElement('div'); d.className = 'toast ' + kind;
+  d.innerHTML = `<i class="fa-solid ${kind === 'err' ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i><span>${esc(msg)}</span>`;
+  $('#toasts').appendChild(d); setTimeout(() => d.remove(), kind === 'err' ? 5000 : 2200);
+}
+
+/* =========================================================
+   8. FICHAS DE DETALLE
+   ========================================================= */
+function ratingBlock(kind, item) {
+  const keys = kind === 'g' ? GK : EK, st = stats(item, keys);
+  const bars = keys.map(k => `<div class="bar"><span>${esc(t('r_' + k))}</span><div class="track"><div class="fill" style="width:${(st[k] || 0) * 10}%"></div></div><b>${fmt(st[k])}</b></div>`).join('');
+  const hist = item.ratings.slice().reverse().map(r => `<div class="h"><b>${fmt(r.overall)}</b>
+    <span>${keys.filter(k => typeof r[k] === 'number').map(k => `${esc(t('r_' + k))}: ${r[k]}`).join(' · ')}</span>
+    <small style="color:#5d6d93">${esc(new Date(r.date).toLocaleDateString(S.settings.lang))}</small>
+    <button class="x" data-act="delRating" data-kind="${kind}" data-id="${item.id}" data-rid="${r.id}" aria-label="${esc(t('delete'))}"><i class="fa-solid fa-trash"></i></button></div>`).join('');
+  return `<h3><i class="fa-solid fa-star" style="color:var(--yellow)"></i> ${esc(t('r_title'))}</h3>
+    <div class="scorebox"><div class="bigscore">${fmt(st.overall)}<br><small>${esc(t('r_avg'))} · ${st.count} ${esc(t('r_votes'))}</small></div><div class="bars">${bars}</div></div>
+    <form class="box" data-form="rating" data-kind="${kind}" data-id="${item.id}" style="margin-top:.8rem">
+      <div class="rform">
+        <div class="field"><label>${esc(t('r_overall'))} *</label><input type="text" inputmode="decimal" name="overall" placeholder="8.75" required></div>
+        ${keys.map(k => `<div class="field"><label>${esc(t('r_' + k))}</label><input type="text" inputmode="decimal" name="${k}" placeholder="—"></div>`).join('')}
+        <button class="btn" type="submit"><i class="fa-solid fa-plus"></i> ${esc(t('r_add'))}</button>
+      </div><small style="color:#5d6d93;display:block;margin-top:.4rem">${esc(t('r_hint'))}</small></form>
+    ${hist ? `<h3>${esc(t('r_history'))}</h3><div class="hist">${hist}</div>` : `<p style="color:#5d6d93">${esc(t('r_none'))}</p>`}`;
+}
+
+function openGadget(id, imgIdx = 0) {
+  const g = gById(id); if (!g) return;
+  const eps = episodesOf(id), im = g.images[imgIdx] ? imgIdx : 0;
+  openModal(`<h2>${esc(g.name)}</h2>
+    <div class="gallery">${g.images.length ? `<img class="main" src="${esc(g.images[im])}" alt="">` : `<div class="ph-main"><i class="fa-solid fa-wand-magic-sparkles"></i></div>`}
+      ${g.images.length > 1 ? `<div class="thumbs">${g.images.map((s, i) => `<div class="t ${i === im ? 'sel' : ''}" data-act="galleryImg" data-id="${id}" data-i="${i}"><img src="${esc(s)}" alt=""></div>`).join('')}</div>` : ''}</div>
+    ${g.tags.length ? `<div class="chips" style="margin-top:.7rem">${g.tags.map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>` : ''}
+    <p style="margin-top:.7rem;white-space:pre-wrap">${esc(g.desc)}</p>
+    ${g.utility ? `<h3>${esc(t('f_utility'))}</h3><p style="white-space:pre-wrap">${esc(g.utility)}</p>` : ''}
+    <h3><i class="fa-solid fa-film"></i> ${esc(t('d_episodes'))}</h3>
+    ${eps.length ? `<div class="chips">${eps.map(e => `<span class="chip yel link" data-act="openEpisode" data-id="${e.id}">${esc(e.title)}</span>`).join('')}</div>` : `<p style="color:#5d6d93">${esc(t('d_none'))}</p>`}
+    ${ratingBlock('g', g)}
+    <div class="row end"><button class="btn ghost" data-act="fav" data-id="${id}" data-reopen="1"><i class="fa-solid fa-heart" style="color:${g.fav ? 'var(--red)' : '#9aa7c4'}"></i> ${esc(t(g.fav ? 'fav_remove' : 'fav_add'))}</button>
+      <button class="btn ghost" data-act="editGadget" data-id="${id}"><i class="fa-solid fa-pen"></i> ${esc(t('edit'))}</button>
+      <button class="btn danger" data-act="delGadget" data-id="${id}"><i class="fa-solid fa-trash"></i> ${esc(t('delete'))}</button></div>`, { keepScroll: imgIdx > 0 });
+}
+
+function openEpisode(id) {
+  const e = eById(id); if (!e) return; const gs = gadgetsOf(e);
+  openModal(`<h2>${esc(e.title)}</h2>
+    <div class="chips"><span class="chip ${e.type === 'movie' ? 'red' : e.type === 'special' ? 'yel' : ''}">${esc(t('type_' + e.type))}</span>${e.date ? `<span class="chip"><i class="fa-regular fa-calendar"></i> ${esc(e.date)}</span>` : ''}</div>
+    ${e.notes ? `<p style="margin-top:.7rem;white-space:pre-wrap">${esc(e.notes)}</p>` : ''}
+    <h3><i class="fa-solid fa-wand-magic-sparkles"></i> ${esc(t('d_gadgets'))}</h3>
+    ${gs.length ? `<div class="chips">${gs.map(g => `<span class="chip link" data-act="openGadget" data-id="${g.id}">${esc(g.name)}</span>`).join('')}</div>` : `<p style="color:#5d6d93">${esc(t('d_none'))}</p>`}
+    ${ratingBlock('e', e)}
+    <div class="row end"><button class="btn ghost" data-act="editEpisode" data-id="${id}"><i class="fa-solid fa-pen"></i> ${esc(t('edit'))}</button>
+      <button class="btn danger" data-act="delEpisode" data-id="${id}"><i class="fa-solid fa-trash"></i> ${esc(t('delete'))}</button></div>`);
+}
+
+/* =========================================================
+   9. FORMULARIOS
+   ========================================================= */
+let formImgs = [], pending = [];
+
+function filterInput(target) { return `<input class="inp" style="margin-bottom:.4rem" placeholder="${esc(t('f_filter'))}" data-filter="${target}">`; }
+
+function openGadgetForm(id) {
+  const g = id ? gById(id) : null; formImgs = g ? g.images.slice() : [];
+  openModal(`<h2>${esc(t(g ? 'edit' : 'add_gadget'))}</h2>
+  <form data-form="gadget" data-id="${id || ''}">
+    <div class="field"><label>${esc(t('f_name'))} *</label><input type="text" name="name" required maxlength="120" value="${esc(g?.name)}"></div>
+    <div class="field"><label>${esc(t('f_desc'))}</label><textarea name="desc" maxlength="500">${esc(g?.desc)}</textarea></div>
+    <div class="field"><label>${esc(t('f_utility'))}</label><textarea name="utility">${esc(g?.utility)}</textarea></div>
+    <div class="field"><label>${esc(t('f_tags'))}</label><input type="text" name="tags" value="${esc(g?.tags.join(', '))}"></div>
+    <div class="field"><span class="lbl">${esc(t('f_images'))}</span>
+      <div id="imgThumbs" class="thumbs"></div>
+      <div class="row"><label class="btn ghost sm" style="cursor:pointer"><i class="fa-solid fa-upload"></i> ${esc(t('f_upload'))}<input type="file" id="imgFile" accept="image/*" multiple hidden></label>
+        <input class="inp" id="imgUrl" style="flex:1;min-width:150px;width:auto" placeholder="${esc(t('f_url_ph'))}"><button type="button" class="btn ghost sm" data-act="addUrl">${esc(t('f_add_url'))}</button></div></div>
+    <div class="field"><label>${esc(t('f_episodes_link'))}</label>${S.episodes.length > 6 ? filterInput('epList') : ''}
+      <div class="checklist" id="epList">${S.episodes.map(e => `<label data-s="${esc(norm(e.title))}"><input type="checkbox" name="e" value="${e.id}" ${g && e.gadgets.includes(g.id) ? 'checked' : ''}> ${esc(e.title)}</label>`).join('') || `<small style="padding:.4rem">${esc(t('d_none'))}</small>`}</div></div>
+    <div class="row end"><button type="button" class="btn ghost" data-act="${g ? 'openGadget' : 'closeModal'}" data-id="${id || ''}">${esc(t('cancel'))}</button><button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> ${esc(t('save'))}</button></div>
+  </form>`, { wide: true });
+  renderThumbs();
+}
+function renderThumbs() {
+  const el = $('#imgThumbs'); if (!el) return;
+  el.innerHTML = formImgs.map((s, i) => `<div class="t"><img src="${esc(s)}" alt=""><button type="button" class="rm" data-act="rmImg" data-i="${i}"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+}
+
+function openEpisodeForm(id) {
+  const e = id ? eById(id) : null; pending = [];
+  openModal(`<h2>${esc(t(e ? 'edit' : 'add_episode'))}</h2>
+  <form data-form="episode" data-id="${id || ''}">
+    <div class="field"><label>${esc(t('f_title'))} *</label><input type="text" name="title" required maxlength="160" value="${esc(e?.title)}"></div>
+    <div class="grid2"><div class="field"><label>${esc(t('f_type'))}</label><select name="type">${TYPES.map(k => `<option value="${k}" ${e?.type === k ? 'selected' : ''}>${esc(t('type_' + k))}</option>`).join('')}</select></div>
+      <div class="field"><label>${esc(t('f_date'))}</label><input type="date" name="date" value="${esc(e?.date)}"></div></div>
+    <div class="field"><label>${esc(t('f_notes'))}</label><textarea name="notes">${esc(e?.notes)}</textarea></div>
+    <div class="field"><label>${esc(t('f_gadgets_link'))}</label>${filterInput('gList')}
+      <div class="checklist" id="gList">${S.gadgets.map(g => `<label data-s="${esc(norm(g.name))}"><input type="checkbox" name="g" value="${g.id}" ${e?.gadgets.includes(g.id) ? 'checked' : ''}> ${esc(g.name)}</label>`).join('')}</div></div>
+    <div class="box"><span class="lbl"><i class="fa-solid fa-wand-magic-sparkles"></i> ${esc(t('f_new_inline'))}</span>
+      <div class="row" style="margin-top:.4rem"><input class="inp" id="newGName" style="flex:1;min-width:140px;width:auto" placeholder="${esc(t('f_inline_name'))}">
+        <input class="inp" id="newGDesc" style="flex:2;min-width:160px;width:auto" placeholder="${esc(t('f_inline_desc'))}">
+        <button type="button" class="btn sm" data-act="addPending"><i class="fa-solid fa-plus"></i> ${esc(t('f_inline_add'))}</button></div>
+      <div class="chips" id="pendingList" style="margin-top:.5rem"></div></div>
+    <div class="row end"><button type="button" class="btn ghost" data-act="${e ? 'openEpisode' : 'closeModal'}" data-id="${id || ''}">${esc(t('cancel'))}</button><button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> ${esc(t('save'))}</button></div>
+  </form>`, { wide: true });
+}
+const renderPending = () => { const el = $('#pendingList'); if (el) el.innerHTML = pending.map((p, i) => `<span class="chip red">${esc(p.name)} <button type="button" data-act="rmPending" data-i="${i}" style="margin-left:.3rem"><i class="fa-solid fa-xmark"></i></button></span>`).join(''); };
+
+/* ---- Guardado ---- */
+function saveGadget(f) {
+  const fd = new FormData(f), id = f.dataset.id, name = String(fd.get('name')).trim();
+  if (!name) return toast(t('err_name'), 'err');
+  const tags = [...new Map(String(fd.get('tags')).split(',').map(x => x.trim()).filter(Boolean).map(x => [norm(x), x])).values()];
+  const eps = fd.getAll('e'); let gid = id;
+  const ok = commit(() => {
+    let g = id ? gById(id) : null;
+    if (!g) { g = { id: uid(), fav: false, ratings: [], created: Date.now() }; S.gadgets.push(g); gid = g.id; }
+    Object.assign(g, { name, desc: String(fd.get('desc')).trim(), utility: String(fd.get('utility')).trim(), tags, images: formImgs.slice() });
+    S.episodes.forEach(e => {
+      const has = e.gadgets.includes(g.id), want = eps.includes(e.id);
+      if (want && !has) e.gadgets.push(g.id); if (!want && has) e.gadgets = e.gadgets.filter(x => x !== g.id);
+    });
+  });
+  if (ok) { toast(t('saved')); render(); openGadget(gid); }
+}
+function saveEpisode(f) {
+  const fd = new FormData(f), id = f.dataset.id, title = String(fd.get('title')).trim();
+  if (!title) return toast(t('err_name'), 'err');
+  const sel = fd.getAll('g'); let eid = id;
+  const ok = commit(() => {
+    // 1) Inventos nuevos creados en el acto: se registran en la lista global
+    const created = pending.map(p => { const g = { id: uid(), name: p.name, desc: p.desc, utility: '', images: [], tags: [], fav: false, ratings: [], created: Date.now() }; S.gadgets.push(g); return g.id; });
+    let e = id ? eById(id) : null;
+    if (!e) { e = { id: uid(), ratings: [], created: Date.now(), gadgets: [] }; S.episodes.push(e); eid = e.id; }
+    Object.assign(e, { title, type: String(fd.get('type')), date: String(fd.get('date')), notes: String(fd.get('notes')).trim(), gadgets: [...new Set([...sel, ...created])] });
+  });
+  if (ok) { pending = []; toast(t('saved')); render(); openEpisode(eid); }
+}
+function addRating(f) {
+  const { kind, id } = f.dataset, item = kind === 'g' ? gById(id) : eById(id), keys = kind === 'g' ? GK : EK, fd = new FormData(f);
+  const num = n => { const v = String(fd.get(n) || '').trim().replace(',', '.'); return v === '' ? null : Number(v); };
+  const bad = v => v == null || !Number.isFinite(v) || v < 1 || v > 10;
+  const ov = num('overall'); if (bad(ov)) return toast(t('r_invalid'), 'err');
+  const r = { id: uid(), overall: round2(ov), date: new Date().toISOString() };
+  for (const k of keys) { const v = num(k); if (v == null) continue; if (bad(v)) return toast(t('r_invalid'), 'err'); r[k] = round2(v); }
+  if (commit(() => item.ratings.push(r))) { toast(t('rated')); render(); kind === 'g' ? openGadget(id) : openEpisode(id); }
+}
+
+/* =========================================================
+   10. IMÁGENES (redimensionado + Base64 con control de errores)
+   ========================================================= */
+function fileToDataURL(file, max = 900, quality = .75, keepAlpha = false) {
+  return new Promise((res, rej) => {
+    if (!file.type.startsWith('image/')) return rej(new Error('type'));
+    if (file.size > 15 * 1024 * 1024) return rej(new Error('big'));
+    const fr = new FileReader();
+    fr.onerror = () => rej(new Error('read'));
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = () => rej(new Error('img'));
+      img.onload = () => {
+        const k = Math.min(1, max / Math.max(img.width, img.height)), w = Math.round(img.width * k), h = Math.round(img.height * k);
+        const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d');
+        if (!keepAlpha) { x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); }
+        x.drawImage(img, 0, 0, w, h);
+        res(c.toDataURL(keepAlpha ? 'image/webp' : 'image/jpeg', quality));
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+const imgErr = e => toast(t(e.message === 'big' ? 'err_big' : 'err_img'), 'err');
+
+/* =========================================================
+   11. BOLSILLO MÁGICO
+   ========================================================= */
+function pocket() {
+  if (!S.gadgets.length) return toast(t('pocket_empty'), 'err');
+  const btn = $('#pocketBtn'); btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
+  setTimeout(() => {
+    btn.classList.remove('shake');
+    const g = S.gadgets[Math.floor(Math.random() * S.gadgets.length)];
+    openModal(`<div class="reveal"><div class="big">${esc(t('pocket_shout'))}</div>
+      ${g.images[0] ? `<img src="${esc(g.images[0])}" alt="">` : `<div class="ph-big"><i class="fa-solid fa-wand-magic-sparkles"></i></div>`}
+      <h2 style="padding:0">${esc(g.name)}</h2><p>${esc(g.desc)}</p>
+      <div class="row end" style="justify-content:center"><button class="btn ghost" data-act="pocket"><i class="fa-solid fa-shuffle"></i> ${esc(t('pocket_again'))}</button>
+      <button class="btn" data-act="openGadget" data-id="${g.id}"><i class="fa-solid fa-book-open"></i> ${esc(t('pocket_open'))}</button></div></div>`);
+  }, 900);
+}
+
+/* =========================================================
+   12. PANEL DE PERSONALIZACIÓN + DATOS
+   ========================================================= */
+function opt(key, val, label) { return `<button type="button" class="opt ${S.settings[key] === val ? 'on' : ''}" data-act="setOpt" data-key="${key}" data-val="${val}">${esc(label)}</button>`; }
+function openSettings(keep) {
+  const s = S.settings, kb = (JSON.stringify(S).length / 1024).toFixed(0);
+  openModal(`<h2><i class="fa-solid fa-sliders"></i> ${esc(t('set_title'))}</h2>
+  <h3>${esc(t('set_avatar'))}</h3>
+  <div class="row"><div class="avatar" style="width:72px;height:72px;font-size:1.6rem;animation:none">${avatarHTML()}</div>
+    <label class="btn sm" style="cursor:pointer"><i class="fa-solid fa-image"></i> ${esc(t('set_avatar_pick'))}<input type="file" id="avatarFile" accept="image/*" hidden></label>
+    ${s.avatar ? `<button class="btn ghost sm" data-act="rmAvatar">${esc(t('set_avatar_reset'))}</button>` : ''}</div>
+  <h3>${esc(t('set_lang'))}</h3><div class="opts">${opt('lang', 'es', 'Español')}${opt('lang', 'en', 'English')}${opt('lang', 'ja', '日本語')}</div>
+  <h3>${esc(t('set_font'))}</h3><div class="opts">${FONTS.map(f => `<button type="button" class="opt ${s.font === f.id ? 'on' : ''}" data-act="setOpt" data-key="font" data-val="${f.id}" style="font-family:${f.css}">${esc(f.name)}</button>`).join('')}</div>
+  <h3>${esc(t('set_shape'))}</h3><div class="opts">${opt('btnShape', 'pill', t('shape_pill'))}${opt('btnShape', 'round', t('shape_round'))}${opt('btnShape', 'rect', t('shape_rect'))}${opt('btnShape', 'sharp', t('shape_sharp'))}</div>
+  <h3>${esc(t('set_effect'))}</h3><div class="opts">${opt('btnEffect', 'none', t('eff_none'))}${opt('btnEffect', 'shadow', t('eff_shadow'))}${opt('btnEffect', 'neon', t('eff_neon'))}</div>
+  <h3>${esc(t('set_bg'))} / ${esc(t('set_fg'))}</h3>
+  <div class="row"><label class="row" style="gap:.4rem">${esc(t('set_bg'))} <input type="color" data-color="btnBg" value="${s.btnBg}"></label>
+    <label class="row" style="gap:.4rem">${esc(t('set_fg'))} <input type="color" data-color="btnFg" value="${s.btnFg}"></label></div>
+  <div class="row" style="margin-top:.6rem"><span class="lbl">${esc(t('set_presets'))}</span>${PRESETS.map(([b, f], i) => `<button type="button" class="swatch" data-act="preset" data-i="${i}" style="background:${b};box-shadow:0 0 0 3px ${f} inset,0 2px 8px rgba(0,0,0,.25)" aria-label="preset ${i + 1}"></button>`).join('')}</div>
+  <h3>${esc(t('set_menu'))}</h3><div class="opts">${opt('menuPos', 'top', t('menu_top'))}${opt('menuPos', 'tl', t('menu_tl'))}${opt('menuPos', 'tr', t('menu_tr'))}${opt('menuPos', 'bottom', t('menu_bottom'))}</div>
+  <small style="color:#5d6d93">${esc(t('set_menu_note'))}</small>
+  <h3>${esc(t('set_fab'))}</h3><div class="opts">${opt('fabPos', 'br', t('fab_br'))}${opt('fabPos', 'bl', t('fab_bl'))}</div>
+  <h3>${esc(t('set_data'))}</h3>
+  <div class="row"><button class="btn sm" data-act="export"><i class="fa-solid fa-download"></i> ${esc(t('exp'))}</button>
+    <button class="btn ghost sm" data-act="import"><i class="fa-solid fa-upload"></i> ${esc(t('imp'))}</button>
+    <button class="btn danger sm" data-act="reset"><i class="fa-solid fa-trash"></i> ${esc(t('reset'))}</button></div>
+  <small style="color:#5d6d93;display:block;margin-top:.5rem">${esc(t('storage'))}: ${kb} KB / ~5 MB</small>`, { wide: true, keepScroll: keep });
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify({ app: 'doraemon-encyclopedia', version: 1, exported: new Date().toISOString(), ...S }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `doraemon-backup-${new Date().toISOString().slice(0, 10)}.json`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function importData(file) {
+  const fr = new FileReader();
+  fr.onerror = () => toast(t('import_err'), 'err');
+  fr.onload = () => {
+    let d; try { d = JSON.parse(fr.result); if (!d || (!Array.isArray(d.gadgets) && !Array.isArray(d.episodes))) throw 0; d = normalize(d); } catch { return toast(t('import_err'), 'err'); }
+    openModal(`<h2>${esc(t('import_title'))}</h2><p>${d.gadgets.length} ${t('c_gadgets')} · ${d.episodes.length} ${t('c_episodes')}</p>
+      <div class="row end"><button class="btn ghost" data-act="closeModal">${esc(t('cancel'))}</button><button class="btn" id="mergeBtn">${esc(t('import_merge'))}</button><button class="btn danger" id="replBtn">${esc(t('import_replace'))}</button></div>`);
+    $('#replBtn').onclick = () => { if (commit(() => { S = d; })) { toast(t('import_ok')); closeModal(); render(); } };
+    $('#mergeBtn').onclick = () => {
+      if (commit(() => {
+        const gi = new Set(S.gadgets.map(g => g.id)), ei = new Set(S.episodes.map(e => e.id));
+        d.gadgets.forEach(g => { if (!gi.has(g.id)) S.gadgets.push(g); }); d.episodes.forEach(e => { if (!ei.has(e.id)) S.episodes.push(e); });
+      })) { toast(t('import_ok')); closeModal(); render(); }
+    };
+  };
+  fr.readAsText(file);
+}
+
+/* =========================================================
+   13. EVENTOS (delegación)
+   ========================================================= */
+const ACTS = {
+  nav: d => { if (d.v === 'settings') return openSettings(); ui.view = d.v; ui.tag = ''; ui.type = ''; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+  closeModal, pocket,
+  openGadget: d => openGadget(d.id), openEpisode: d => openEpisode(d.id),
+  galleryImg: d => openGadget(d.id, +d.i),
+  newGadget: () => openGadgetForm(), newEpisode: () => openEpisodeForm(),
+  editGadget: d => openGadgetForm(d.id), editEpisode: d => openEpisodeForm(d.id),
+  fav: d => { const g = gById(d.id); if (g && commit(() => { g.fav = !g.fav; })) { render(); if (d.reopen) openGadget(d.id); } },
+  delGadget: async d => { const g = gById(d.id); if (g && await confirmBox(t('confirm_del', { n: g.name }))) if (commit(() => { S.gadgets = S.gadgets.filter(x => x.id !== d.id); S.episodes.forEach(e => e.gadgets = e.gadgets.filter(x => x !== d.id)); })) { toast(t('deleted')); closeModal(); render(); } },
+  delEpisode: async d => { const e = eById(d.id); if (e && await confirmBox(t('confirm_del', { n: e.title }))) if (commit(() => { S.episodes = S.episodes.filter(x => x.id !== d.id); })) { toast(t('deleted')); closeModal(); render(); } },
+  delRating: d => { const it = d.kind === 'g' ? gById(d.id) : eById(d.id); if (it && commit(() => { it.ratings = it.ratings.filter(r => r.id !== d.rid); })) { render(); d.kind === 'g' ? openGadget(d.id) : openEpisode(d.id); } },
+  rmImg: d => { formImgs.splice(+d.i, 1); renderThumbs(); },
+  addUrl: () => { const i = $('#imgUrl'), v = i.value.trim(); if (!/^https?:\/\/\S+$/i.test(v)) return toast(t('err_url'), 'err'); formImgs.push(v); i.value = ''; renderThumbs(); },
+  addPending: () => { const n = $('#newGName'), name = n.value.trim(); if (!name) return toast(t('err_name'), 'err'); pending.push({ name, desc: $('#newGDesc').value.trim() }); n.value = ''; $('#newGDesc').value = ''; renderPending(); },
+  rmPending: d => { pending.splice(+d.i, 1); renderPending(); },
+  setOpt: d => { const sc = $('#modalBox').scrollTop; S.settings[d.key] = d.val; save(); render(); openSettings(true); $('#modalBox').scrollTop = sc; },
+  preset: d => { const sc = $('#modalBox').scrollTop;[S.settings.btnBg, S.settings.btnFg] = PRESETS[+d.i]; save(); applySettings(); openSettings(true); $('#modalBox').scrollTop = sc; },
+  rmAvatar: () => { S.settings.avatar = ''; save(); render(); openSettings(true); },
+  export: exportData, import: () => { $('#importFile').value = ''; $('#importFile').click(); },
+  reset: async () => { if (await confirmBox(t('reset_confirm'))) { const lang = S.settings.lang; try { localStorage.removeItem(STORE); } catch {} S = defaults(); S.settings.lang = lang; save(); closeModal(); render(); } },
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) { if (e.target.id === 'modal') closeModal(); return; }
+  if (el.dataset.act === 'fav') e.stopPropagation();
+  ACTS[el.dataset.act]?.(el.dataset);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { if ($('#confirm').classList.contains('open')) $('#cNo').click(); else closeModal(); }
+  if (e.key === 'Enter' && e.target.matches?.('.card[data-act]')) ACTS[e.target.dataset.act]?.(e.target.dataset);
+});
+document.addEventListener('submit', e => {
+  const f = e.target.closest('form[data-form]'); if (!f) return; e.preventDefault();
+  ({ gadget: saveGadget, episode: saveEpisode, rating: addRating })[f.dataset.form](f);
+});
+document.addEventListener('input', e => {
+  const t_ = e.target;
+  if (t_.id === 'q') { ui.q = t_.value; renderList(); }
+  else if (t_.dataset.color) { S.settings[t_.dataset.color] = t_.value; applySettings(); save(); }
+  else if (t_.dataset.filter) { const q = norm(t_.value); document.querySelectorAll('#' + t_.dataset.filter + ' label').forEach(l => l.classList.toggle('hidden', !l.dataset.s.includes(q))); }
+});
+document.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.id === 'sort') { ui.sort = el.value; renderList(); }
+  else if (el.id === 'filter') { ui[ui.view === 'episodes' ? 'type' : 'tag'] = el.value; renderList(); }
+  else if (el.id === 'imgFile') { for (const f of el.files) { try { formImgs.push(await fileToDataURL(f)); } catch (x) { imgErr(x); } } renderThumbs(); el.value = ''; }
+  else if (el.id === 'avatarFile' && el.files[0]) { try { S.settings.avatar = await fileToDataURL(el.files[0], 500, .85, true); if (!save()) S.settings.avatar = ''; render(); openSettings(true); } catch (x) { imgErr(x); } }
+  else if (el.id === 'importFile' && el.files[0]) importData(el.files[0]);
+});
+// Imágenes rotas (URL caída): se sustituyen por un icono
+document.addEventListener('error', e => {
+  if (e.target.tagName !== 'IMG') return;
+  const ph = document.createElement('i'); ph.className = 'fa-solid fa-image ph'; e.target.replaceWith(ph);
+}, true);
+
+/* =========================================================
+   14. ARRANQUE
+   ========================================================= */
+load(); render();
+</script>
+</body>
+</html>
